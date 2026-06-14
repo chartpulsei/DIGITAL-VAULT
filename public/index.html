@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>$3K Offer System — AI-Powered High-Ticket Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,168,67,0.08) 0%, transparent 70%);
+      border-bottom: 1px solid var(--border-primary);
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(212, 168, 67, 0.08);
+      border: 1px solid rgba(212, 168, 67, 0.25);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-gold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    .hero-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    .hero h1 { margin-bottom: 20px; }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 52px;
+      line-height: 1.75;
+    }
+
+    .hero-stats {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 500;
+    }
+
+    .stat-divider {
+      width: 1px;
+      height: 40px;
+      background: var(--border-primary);
+    }
+
+    /* Tools */
+    .tools-section { padding: 80px 0; }
+
+    .section-label {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+
+    .section-label h2 { margin-bottom: 10px; }
+
+    .section-label p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .tool-card {
+      background: var(--gradient-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      transition: all var(--transition-slow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tool-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--top-color, var(--gradient-gold));
+      opacity: 0;
+      transition: opacity var(--transition-slow);
+    }
+
+    .tool-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .tool-card:hover::after { opacity: 1; }
+
+    .tc-gold { --top-color: var(--gradient-gold); }
+    .tc-purple { --top-color: linear-gradient(90deg, #7c5cbf, #9b7de0); }
+    .tc-blue { --top-color: linear-gradient(90deg, #4a7fc1, #60a0e0); }
+
+    .tool-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .ti-gold { background: rgba(212,168,67,0.12); }
+    .ti-purple { background: rgba(124,92,191,0.12); }
+    .ti-blue { background: rgba(74,127,193,0.12); }
+
+    .tool-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+
+    .tool-card h3 { font-size: 1.2rem; margin-bottom: 6px; }
+
+    .tool-card p {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    .tool-features {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .tf {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .tf-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .d-gold { background: var(--accent-gold); }
+    .d-purple { background: var(--accent-purple-light); }
+    .d-blue { background: var(--accent-blue); }
+
+    .launch-btn { margin-top: 6px; width: 100%; }
+
+    /* How It Works */
+    .how-section {
+      padding: 80px 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-primary);
+      border-bottom: 1px solid var(--border-primary);
+    }
+
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 28px;
+      margin-top: 48px;
+    }
+
+    .step {
+      text-align: center;
+    }
+
+    .step-num-circle {
+      width: 46px;
+      height: 46px;
+      background: rgba(212,168,67,0.1);
+      border: 1px solid rgba(212,168,67,0.25);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      margin: 0 auto 14px;
+    }
+
+    .step h4 { margin-bottom: 8px; font-size: 0.95rem; }
+
+    .step p {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 96px 0;
+      text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(212,168,67,0.06) 0%, transparent 70%);
+    }
+
+    .cta-section h2 { margin-bottom: 14px; }
+
+    .cta-section p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      margin-bottom: 36px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-btns {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .footer {
+      padding: 28px 0;
+      border-top: 1px solid var(--border-primary);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 64px 0 48px; }
+      .hero-stats { gap: 24px; }
+      .stat-divider { display: none; }
+      .tools-grid { grid-template-columns: 1fr; }
+      .tool-card { padding: 24px; }
+      .tools-section, .how-section, .cta-section { padding: 56px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <div class="nav-brand-icon">$</div>
+      3K Offer System
+    </a>
+    <ul class="nav-links">
+      <li><a href="/offer-architect.html">Offer Architect</a></li>
+      <li><a href="/sales-analyzer.html">Objection Analyzer</a></li>
+      <li><a href="/reels-generator.html">Reels Generator</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">
+      <span class="hero-dot"></span>
+      Powered by Claude AI
+    </div>
+    <h1>Build Your <span class="text-gold">$3K+ Digital Offer</span><br>With AI Precision</h1>
+    <p class="hero-subtitle">
+      Three powerful AI tools to help you architect a high-ticket offer, crush sales
+      objections, and build a content engine that attracts your exact ideal buyer.
+    </p>
+    <div class="hero-stats">
+      <div class="text-center">
+        <div class="stat-value">$3K+</div>
+        <div class="stat-label">Target Price Point</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="text-center">
+        <div class="stat-value">3</div>
+        <div class="stat-label">AI Tools</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="text-center">
+        <div class="stat-value">6</div>
+        <div class="stat-label">Interview Stages</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="text-center">
+        <div class="stat-value">100%</div>
+        <div class="stat-label">Your Story</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tools -->
+<section class="tools-section">
+  <div class="container">
+    <div class="section-label">
+      <div class="badge badge-gold" style="margin-bottom:14px">The Toolkit</div>
+      <h2>Three Tools. One Outcome.</h2>
+      <p>Everything you need to go from raw experience to irresistible high-ticket offer.</p>
+    </div>
+    <div class="tools-grid">
+
+      <!-- Tool 1 -->
+      <div class="tool-card tc-gold">
+        <div class="tool-icon ti-gold">&#127775;</div>
+        <div>
+          <div class="tool-num">Tool 01</div>
+          <h3>High-Ticket Offer Architect</h3>
+        </div>
+        <p>An AI interviewer walks you through 6 structured stages — from background discovery to pricing validation — to uncover and shape your perfect $3K+ digital offer.</p>
+        <div class="tool-features">
+          <div class="tf"><span class="tf-dot d-gold"></span>6-stage structured interview</div>
+          <div class="tf"><span class="tf-dot d-gold"></span>Real-time streaming responses</div>
+          <div class="tf"><span class="tf-dot d-gold"></span>Price validation ($3K–$10K)</div>
+          <div class="tf"><span class="tf-dot d-gold"></span>Positioning &amp; messaging framework</div>
+        </div>
+        <a href="/offer-architect.html" class="btn btn-primary btn-lg launch-btn">
+          Launch Offer Architect
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Tool 2 -->
+      <div class="tool-card tc-purple">
+        <div class="tool-icon ti-purple">&#128202;</div>
+        <div>
+          <div class="tool-num">Tool 02</div>
+          <h3>Sales Call Objection Analyzer</h3>
+        </div>
+        <p>Paste your sales call transcripts and get a precise psychological breakdown of every objection — converted into video content that pre-handles buyer resistance.</p>
+        <div class="tool-features">
+          <div class="tf"><span class="tf-dot d-purple"></span>Deep objection pattern extraction</div>
+          <div class="tf"><span class="tf-dot d-purple"></span>Belief shift frameworks</div>
+          <div class="tf"><span class="tf-dot d-purple"></span>Content hook generation</div>
+          <div class="tf"><span class="tf-dot d-purple"></span>CTA engineering per objection</div>
+        </div>
+        <a href="/sales-analyzer.html" class="btn btn-lg launch-btn" style="background:rgba(124,92,191,0.15);border:1px solid rgba(124,92,191,0.4);color:var(--accent-purple-light)">
+          Launch Objection Analyzer
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Tool 3 -->
+      <div class="tool-card tc-blue">
+        <div class="tool-icon ti-blue">&#127916;</div>
+        <div>
+          <div class="tool-num">Tool 03</div>
+          <h3>Instagram Reels Topic Generator</h3>
+        </div>
+        <p>Fill out a structured interview about your story, beliefs, and transformations. Get a full library of Reels topics engineered for tribal alignment — repelling the wrong audience.</p>
+        <div class="tool-features">
+          <div class="tf"><span class="tf-dot d-blue"></span>Identity-based content strategy</div>
+          <div class="tf"><span class="tf-dot d-blue"></span>Tribal alignment signals</div>
+          <div class="tf"><span class="tf-dot d-blue"></span>Searchable, filterable card grid</div>
+          <div class="tf"><span class="tf-dot d-blue"></span>One-click copy for each topic</div>
+        </div>
+        <a href="/reels-generator.html" class="btn btn-lg launch-btn" style="background:rgba(74,127,193,0.15);border:1px solid rgba(74,127,193,0.4);color:var(--accent-blue)">
+          Launch Reels Generator
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-section">
+  <div class="container">
+    <div class="section-label">
+      <div class="badge badge-purple" style="margin-bottom:14px">Process</div>
+      <h2>From Story to $3K+ Offer</h2>
+      <p>The system pulls your unique value out of your head and puts it into a sellable structure.</p>
+    </div>
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-num-circle">1</div>
+        <h4>Interview</h4>
+        <p>The AI conducts a deep-dive interview into your background, skills, and transformations.</p>
+      </div>
+      <div class="step">
+        <div class="step-num-circle">2</div>
+        <h4>Extract</h4>
+        <p>It surfaces every monetizable skill, story, and result you've ever achieved.</p>
+      </div>
+      <div class="step">
+        <div class="step-num-circle">3</div>
+        <h4>Structure</h4>
+        <p>Your experience gets shaped into a specific offer format with a clear result and price.</p>
+      </div>
+      <div class="step">
+        <div class="step-num-circle">4</div>
+        <h4>Validate</h4>
+        <p>Test the ROI, transformation, and price justification before going to market.</p>
+      </div>
+      <div class="step">
+        <div class="step-num-circle">5</div>
+        <h4>Attract</h4>
+        <p>Use the objection analyzer and reels generator to pull in pre-qualified buyers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="badge badge-gold" style="margin-bottom:20px">Get Started</div>
+    <h2>Your $3K Offer Is<br>Already Inside You</h2>
+    <p>The AI needs 20 minutes with you to find it. Start with the Offer Architect.</p>
+    <div class="cta-btns">
+      <a href="/offer-architect.html" class="btn btn-primary btn-lg">
+        Start the Interview
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/sales-analyzer.html" class="btn btn-ghost btn-lg">Analyze Objections</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    $3K Offer System &mdash; Built with Claude AI &mdash; Your story, structured and priced.
+  </div>
+</footer>
+
+<script src="/app.js"></script>
+</body>
+</html>

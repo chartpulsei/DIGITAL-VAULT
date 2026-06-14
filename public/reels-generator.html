@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reels Topic Generator — $3K Offer System</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .gen-layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 28px;
+      align-items: start;
+      padding-bottom: 80px;
+    }
+    @media (max-width: 900px) { .gen-layout { grid-template-columns: 1fr; } }
+    .form-panel { position: sticky; top: 80px; max-height: calc(100vh - 110px); overflow-y: auto; }
+    .form-panel::-webkit-scrollbar { width: 4px; }
+    .form-panel::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 2px; }
+    .panel {
+      background: var(--gradient-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-primary);
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .panel-header h2 { font-size: 0.95rem; font-weight: 700; }
+    .form-section-block {
+      border-bottom: 1px solid var(--border-primary);
+      padding: 20px;
+    }
+    .form-section-block:last-child { border-bottom: none; }
+    .section-heading {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-gold);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-group { margin-bottom: 14px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .form-textarea {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      padding: 10px 12px;
+      resize: vertical;
+      min-height: 70px;
+      outline: none;
+      line-height: 1.55;
+      transition: border-color var(--transition);
+    }
+    .form-textarea:focus { border-color: var(--accent-gold-dark); }
+    .form-textarea::placeholder { color: var(--text-muted); font-size: 0.8rem; }
+    .generate-bar {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border-primary);
+      background: var(--bg-secondary);
+    }
+    /* Results */
+    .results-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .results-count {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .results-count strong { color: var(--accent-gold); font-size: 1.1rem; }
+    .search-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .search-input {
+      flex: 1;
+      background: var(--bg-input);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      padding: 9px 14px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .search-input:focus { border-color: var(--accent-gold-dark); }
+    .search-input::placeholder { color: var(--text-muted); }
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .topic-card {
+      background: var(--gradient-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all var(--transition);
+      animation: fadeIn 0.35s ease;
+    }
+    .topic-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card);
+    }
+    .topic-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.45;
+    }
+    .topic-why {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      border-left: 2px solid var(--accent-gold);
+      padding-left: 10px;
+      line-height: 1.5;
+    }
+    .topic-angle {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      background: var(--bg-input);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      line-height: 1.5;
+    }
+    .topic-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 2px;
+    }
+    .empty-results {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+      text-align: center;
+      gap: 12px;
+      color: var(--text-secondary);
+    }
+    .empty-results .icon { font-size: 52px; }
+    #alertBox { margin-bottom: 16px; display: none; }
+    .no-match {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <div class="nav-brand-icon">💰</div>
+      $3K Offer System
+    </a>
+    <ul class="nav-links">
+      <li><a href="offer-architect.html">Offer Architect</a></li>
+      <li><a href="sales-analyzer.html">Sales Analyzer</a></li>
+      <li><a href="reels-generator.html" class="active">Reels Generator</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="page-header">
+      <div class="badge badge-blue">Content Strategy</div>
+      <h1>Instagram Reels<br/><span class="text-gold">Topic Generator</span></h1>
+      <p>Fill in your identity interview below and get a full library of Reels topics that attract only your exact tribe.</p>
+    </div>
+
+    <div id="alertBox" class="alert alert-error"></div>
+
+    <div class="gen-layout">
+
+      <!-- LEFT: Form Panel -->
+      <div class="form-panel">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>📋 Identity Interview</h2>
+            <span class="badge badge-blue">Your Story</span>
+          </div>
+
+          <div class="form-section-block">
+            <div class="section-heading">🧠 Background & Story</div>
+            <div class="form-group">
+              <label class="form-label">Your Life Story (key turning points)</label>
+              <textarea class="form-textarea" name="lifeStory" placeholder="Where did you start? What happened that changed your path?"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Biggest Hardships & Struggles Overcome</label>
+              <textarea class="form-textarea" name="hardships" placeholder="What did you fight through that most people haven't?"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pivotal Wins & Accomplishments</label>
+              <textarea class="form-textarea" name="wins" placeholder="What results have you achieved that feel significant?"></textarea>
+            </div>
+          </div>
+
+          <div class="form-section-block">
+            <div class="section-heading">⚡ Skills & Transformations</div>
+            <div class="form-group">
+              <label class="form-label">Core Skills You've Developed</label>
+              <textarea class="form-textarea" name="skills" placeholder="What are you genuinely skilled at? Be specific."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Transformations You've Achieved (self or others)</label>
+              <textarea class="form-textarea" name="transformations" placeholder="What changed about you — mindset, body, income, relationships, lifestyle?"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Industries / Niches You've Been In</label>
+              <textarea class="form-textarea" name="industries" placeholder="e.g. real estate, ecommerce, fitness, marketing, etc." style="min-height:50px"></textarea>
+            </div>
+          </div>
+
+          <div class="form-section-block">
+            <div class="section-heading">🧭 Values, Beliefs & Philosophy</div>
+            <div class="form-group">
+              <label class="form-label">Your Core Values</label>
+              <textarea class="form-textarea" name="values" placeholder="What do you stand for? What do you refuse to compromise?"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Controversial Beliefs / What You Disagree With</label>
+              <textarea class="form-textarea" name="controversialBeliefs" placeholder="What does mainstream believe that you think is wrong or broken?"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">How You See the World Differently</label>
+              <textarea class="form-textarea" name="worldview" placeholder="What's your unique lens? What do you see that others miss?"></textarea>
+            </div>
+          </div>
+
+          <div class="form-section-block">
+            <div class="section-heading">🎯 Identity & Personality</div>
+            <div class="form-group">
+              <label class="form-label">Personality Traits That Define You</label>
+              <textarea class="form-textarea" name="personality" placeholder="Blunt, empathetic, relentless, disciplined, chaotic, creative..." style="min-height:55px"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Daily Habits & Lifestyle Markers</label>
+              <textarea class="form-textarea" name="lifestyle" placeholder="What does your daily life actually look like? Morning routine, diet, work style, environment..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">What You're Currently Pursuing</label>
+              <textarea class="form-textarea" name="currentPursuit" placeholder="What's the mission or goal driving you right now?" style="min-height:55px"></textarea>
+            </div>
+          </div>
+
+          <div class="form-section-block">
+            <div class="section-heading">👥 Tribe & Target Audience</div>
+            <div class="form-group">
+              <label class="form-label">Who You Want to Attract</label>
+              <textarea class="form-textarea" name="targetAudience" placeholder="Describe your ideal follower — who they are, what they want, what they believe"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Who You Want to Repel</label>
+              <textarea class="form-textarea" name="repelAudience" placeholder="What type of person is wrong-fit for your content/offer?" style="min-height:55px"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Shared Pain Points With Your Tribe</label>
+              <textarea class="form-textarea" name="sharedPains" placeholder="What does your audience struggle with that you've personally overcome?"></textarea>
+            </div>
+          </div>
+
+          <div class="generate-bar">
+            <button class="btn btn-primary w-full btn-lg" id="generateBtn" onclick="generateTopics()">
+              <span id="genBtnIcon">🎬</span>
+              <span id="genBtnText">Generate Reels Topics</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Results Panel -->
+      <div id="resultsPanel">
+        <div class="empty-results">
+          <div class="icon">🎬</div>
+          <strong>Your topics will appear here</strong>
+          <p style="max-width:360px;font-size:0.875rem;">Fill in the interview form on the left — the more detail you give, the more tribal and precise your topics will be.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script>
+  function getFormData() {
+    const data = {};
+    document.querySelectorAll('textarea[name]').forEach(el => {
+      if (el.value.trim()) data[el.name] = el.value.trim();
+    });
+    return data;
+  }
+
+  function showAlert(msg) {
+    const box = document.getElementById('alertBox');
+    box.textContent = '⚠️ ' + msg;
+    box.style.display = 'flex';
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function hideAlert() {
+    document.getElementById('alertBox').style.display = 'none';
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function copyToClipboard(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  let allTopics = [];
+
+  function renderTopics(topics) {
+    if (!topics || topics.length === 0) return '<div class="no-match">No topics to display.</div>';
+    return topics.map((t, i) => `
+      <div class="topic-card">
+        <div class="topic-title">${escapeHtml(t.topic_title || 'Untitled Topic')}</div>
+        <div class="topic-why">${escapeHtml(t.why_it_attracts_their_tribe || '')}</div>
+        ${t.what_story_or_angle_to_use ? `<div class="topic-angle">📐 ${escapeHtml(t.what_story_or_angle_to_use)}</div>` : ''}
+        <div class="topic-footer">
+          <button class="copy-btn" onclick="copyToClipboard(\`${(t.topic_title || '').replace(/`/g,'\\`')}\`, this)">📋 Copy</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function filterTopics(query) {
+    const q = query.toLowerCase();
+    const filtered = q ? allTopics.filter(t =>
+      (t.topic_title || '').toLowerCase().includes(q) ||
+      (t.why_it_attracts_their_tribe || '').toLowerCase().includes(q) ||
+      (t.what_story_or_angle_to_use || '').toLowerCase().includes(q)
+    ) : allTopics;
+    document.getElementById('topicsGrid').innerHTML = renderTopics(filtered);
+    document.getElementById('filteredCount').textContent = filtered.length + ' of ' + allTopics.length + ' topics';
+  }
+
+  async function generateTopics() {
+    const interviewData = getFormData();
+    if (Object.keys(interviewData).length === 0) {
+      showAlert('Please fill in at least one field before generating topics.');
+      return;
+    }
+
+    hideAlert();
+    const btn = document.getElementById('generateBtn');
+    document.getElementById('genBtnIcon').innerHTML = '<span class="spinner"></span>';
+    document.getElementById('genBtnText').textContent = 'Generating...';
+    btn.disabled = true;
+
+    document.getElementById('resultsPanel').innerHTML = `
+      <div class="loading-container" style="padding:80px 24px;">
+        <div class="spinner spinner-lg"></div>
+        <strong>Generating your tribal content topics...</strong>
+        <p style="font-size:0.85rem;color:var(--text-secondary);">This may take 20–40 seconds for a large topic set</p>
+      </div>`;
+
+    try {
+      const res = await fetch('/api/reels-generator/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ interviewData }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        showAlert(data.error || 'Generation failed. Please try again.');
+        document.getElementById('resultsPanel').innerHTML = `<div class="empty-results"><div class="icon">⚠️</div><strong>Generation failed</strong><p>${escapeHtml(data.error || 'Unknown error')}</p></div>`;
+        return;
+      }
+
+      allTopics = data.topics || [];
+      const count = allTopics.length;
+
+      let html = `
+        <div class="results-toolbar">
+          <div class="results-count"><strong>${count}</strong> topics generated</div>
+          <button class="copy-btn" onclick="copyAllTopics()">📋 Copy All Titles</button>
+        </div>
+        <div class="search-row">
+          <input type="text" class="search-input" placeholder="Search topics..." oninput="filterTopics(this.value)" />
+          <span id="filteredCount" style="align-self:center;font-size:0.8rem;color:var(--text-muted);white-space:nowrap;">${count} topics</span>
+        </div>
+        <div class="topics-grid" id="topicsGrid">
+          ${renderTopics(allTopics)}
+        </div>`;
+
+      if (data.parseError && count === 0) {
+        html = `
+          <div class="alert alert-warning" style="margin-bottom:16px;">⚠️ JSON could not be parsed. Raw output below.</div>
+          <div style="background:var(--bg-secondary);border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:16px;font-size:0.825rem;color:var(--text-secondary);white-space:pre-wrap;max-height:500px;overflow-y:auto;">${escapeHtml(data.rawText || '')}</div>`;
+      }
+
+      document.getElementById('resultsPanel').innerHTML = html;
+    } catch (e) {
+      showAlert('Network error. Make sure the server is running.');
+      document.getElementById('resultsPanel').innerHTML = `<div class="empty-results"><div class="icon">⚠️</div><strong>Connection error</strong><p>Could not reach the server.</p></div>`;
+    } finally {
+      document.getElementById('genBtnIcon').textContent = '🎬';
+      document.getElementById('genBtnText').textContent = 'Generate Reels Topics';
+      btn.disabled = false;
+    }
+  }
+
+  function copyAllTopics() {
+    if (!allTopics.length) return;
+    const titles = allTopics.map((t, i) => `${i + 1}. ${t.topic_title || ''}`).join('\n');
+    navigator.clipboard.writeText(titles).then(() => alert(`${allTopics.length} topic titles copied to clipboard!`));
+  }
+</script>
+</body>
+</html>

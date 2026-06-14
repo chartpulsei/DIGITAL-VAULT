@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sales Call Analyzer — $3K Offer System</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .page-body { padding: 0 0 80px; }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 860px) { .two-col { grid-template-columns: 1fr; } }
+    .input-panel { position: sticky; top: 80px; }
+    .panel {
+      background: var(--gradient-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .panel-header h2 { font-size: 1rem; font-weight: 700; }
+    .panel-body { padding: 24px; }
+    .transcript-area {
+      width: 100%;
+      min-height: 420px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      padding: 14px 16px;
+      resize: vertical;
+      outline: none;
+      line-height: 1.65;
+      transition: border-color var(--transition);
+    }
+    .transcript-area:focus { border-color: var(--accent-gold-dark); }
+    .char-count { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; text-align: right; }
+    .results-panel { min-height: 200px; }
+    .empty-results {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+      text-align: center;
+      gap: 12px;
+      color: var(--text-secondary);
+    }
+    .empty-results .icon { font-size: 48px; }
+    .objection-card {
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 16px;
+      animation: fadeIn 0.3s ease;
+      transition: border-color var(--transition);
+    }
+    .objection-card:hover { border-color: var(--border-accent); }
+    .objection-card-head {
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .objection-quote {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      flex: 1;
+      quotes: '\201C' '\201D';
+    }
+    .objection-quote::before { content: open-quote; color: var(--accent-gold); }
+    .objection-quote::after { content: close-quote; color: var(--accent-gold); }
+    .objection-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 600px) { .field-grid { grid-template-columns: 1fr; } }
+    .field-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+    }
+    .field-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-gold);
+      margin-bottom: 5px;
+    }
+    .field-value { font-size: 0.85rem; color: var(--text-primary); line-height: 1.5; }
+    .field-box-full { grid-column: 1 / -1; }
+    .talking-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+    .talking-list li {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .talking-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent-purple-light);
+    }
+    .cta-box {
+      background: rgba(58, 173, 122, 0.06);
+      border: 1px solid rgba(58, 173, 122, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+    }
+    .cta-box .field-label { color: var(--accent-green); }
+    .card-actions {
+      padding: 10px 20px;
+      border-top: 1px solid var(--border-primary);
+      display: flex;
+      justify-content: flex-end;
+    }
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-primary);
+    }
+    .raw-fallback {
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    #alertBox { margin-bottom: 16px; display: none; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <div class="nav-brand-icon">💰</div>
+      $3K Offer System
+    </a>
+    <ul class="nav-links">
+      <li><a href="offer-architect.html">Offer Architect</a></li>
+      <li><a href="sales-analyzer.html" class="active">Sales Analyzer</a></li>
+      <li><a href="reels-generator.html">Reels Generator</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container-narrow">
+    <div class="page-header">
+      <div class="badge badge-purple">Transcript Analysis</div>
+      <h1>Sales Call<br/><span class="text-gold">Objection Analyzer</span></h1>
+      <p>Paste your sales call transcripts and turn every objection into video content that pre-closes future buyers.</p>
+    </div>
+
+    <div class="page-body">
+      <div id="alertBox" class="alert alert-error"></div>
+
+      <div class="two-col">
+        <div class="input-panel">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>📋 Paste Transcript</h2>
+              <span class="badge badge-purple">Raw Input</span>
+            </div>
+            <div class="panel-body">
+              <textarea
+                id="transcriptInput"
+                class="transcript-area"
+                placeholder="Paste your sales call transcript(s) here...
+
+Example format:
+Caller: So I'm interested but I'm not sure if this is the right time...
+You: Tell me more about what's holding you back.
+Caller: I mean, I've tried programs before and they didn't work...
+
+You can paste multiple transcripts back to back."></textarea>
+              <div class="char-count" id="charCount">0 characters</div>
+              <div style="margin-top: 16px; display: flex; gap: 10px;">
+                <button class="btn btn-primary w-full" id="analyzeBtn" onclick="analyzeTranscript()">
+                  <span id="btnIcon">🔬</span>
+                  <span id="btnText">Analyze Objections</span>
+                </button>
+                <button class="btn btn-ghost" onclick="clearAll()" title="Clear">✕</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-panel" id="resultsPanel">
+          <div class="panel">
+            <div class="empty-results" id="emptyResults">
+              <div class="icon">🎯</div>
+              <strong>Ready to analyze</strong>
+              <p>Paste a transcript on the left and click "Analyze Objections" to extract every barrier and convert it into video content.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const transcriptInput = document.getElementById('transcriptInput');
+  const charCountEl = document.getElementById('charCount');
+
+  transcriptInput.addEventListener('input', () => {
+    const len = transcriptInput.value.length;
+    charCountEl.textContent = len.toLocaleString() + ' character' + (len !== 1 ? 's' : '');
+  });
+
+  function showAlert(msg) {
+    const box = document.getElementById('alertBox');
+    box.textContent = '⚠️ ' + msg;
+    box.style.display = 'flex';
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function hideAlert() {
+    document.getElementById('alertBox').style.display = 'none';
+  }
+
+  function clearAll() {
+    transcriptInput.value = '';
+    charCountEl.textContent = '0 characters';
+    hideAlert();
+    document.getElementById('resultsPanel').innerHTML = `
+      <div class="panel">
+        <div class="empty-results" id="emptyResults">
+          <div class="icon">🎯</div>
+          <strong>Ready to analyze</strong>
+          <p>Paste a transcript on the left and click "Analyze Objections" to extract every barrier and convert it into video content.</p>
+        </div>
+      </div>`;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function renderObjections(objections) {
+    if (!objections || objections.length === 0) return '<p style="color:var(--text-secondary);padding:16px;">No objections could be parsed. See raw output below.</p>';
+    return objections.map((obj, i) => {
+      const talkingPoints = Array.isArray(obj.talking_points)
+        ? obj.talking_points.map(p => `<li>${escapeHtml(p)}</li>`).join('')
+        : `<li>${escapeHtml(String(obj.talking_points || ''))}</li>`;
+
+      const cardData = JSON.stringify(obj, null, 2);
+      return `
+        <div class="objection-card">
+          <div class="objection-card-head">
+            <div class="objection-quote">${escapeHtml(obj.objection || 'Unknown objection')}</div>
+            <span class="badge badge-purple">${escapeHtml(obj.category || 'Uncategorized')}</span>
+          </div>
+          <div class="objection-body">
+            <div class="field-grid">
+              <div class="field-box">
+                <div class="field-label">Root Cause</div>
+                <div class="field-value">${escapeHtml(obj.root_cause || '—')}</div>
+              </div>
+              <div class="field-box">
+                <div class="field-label">Video Topic</div>
+                <div class="field-value">${escapeHtml(obj.video_topic || '—')}</div>
+              </div>
+              <div class="field-box field-box-full">
+                <div class="field-label">Hook</div>
+                <div class="field-value" style="font-weight:600;color:var(--accent-gold)">${escapeHtml(obj.hook || '—')}</div>
+              </div>
+              <div class="field-box field-box-full">
+                <div class="field-label">Talking Points</div>
+                <ul class="talking-list">${talkingPoints}</ul>
+              </div>
+              <div class="field-box">
+                <div class="field-label">Belief Shift</div>
+                <div class="field-value">${escapeHtml(obj.belief_shift || '—')}</div>
+              </div>
+              <div class="cta-box">
+                <div class="field-label">Call to Action</div>
+                <div class="field-value">${escapeHtml(obj.cta || '—')}</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button class="copy-btn" onclick="copyText(\`${cardData.replace(/`/g,'\\`').replace(/\\/g,'\\\\').replace(/`/g,'\\`')}\`, this)">📋 Copy JSON</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function analyzeTranscript() {
+    const transcript = transcriptInput.value.trim();
+    if (!transcript) {
+      showAlert('Please paste a sales call transcript before analyzing.');
+      return;
+    }
+
+    hideAlert();
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    document.getElementById('btnIcon').innerHTML = '<span class="spinner"></span>';
+    document.getElementById('btnText').textContent = 'Analyzing...';
+    analyzeBtn.disabled = true;
+
+    document.getElementById('resultsPanel').innerHTML = `
+      <div class="panel">
+        <div class="loading-container">
+          <div class="spinner spinner-lg"></div>
+          <strong>Analyzing transcript...</strong>
+          <p style="font-size:0.85rem">Extracting objections, beliefs, and content opportunities</p>
+        </div>
+      </div>`;
+
+    try {
+      const res = await fetch('/api/sales-analyzer/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transcript }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        showAlert(data.error || 'Analysis failed. Please try again.');
+        document.getElementById('resultsPanel').innerHTML = `<div class="panel"><div class="empty-results"><div class="icon">⚠️</div><strong>Analysis failed</strong><p>${escapeHtml(data.error || 'Unknown error')}</p></div></div>`;
+        return;
+      }
+
+      const count = data.objections ? data.objections.length : 0;
+      let html = `
+        <div class="panel">
+          <div class="results-header">
+            <h2>🎯 ${count} Objection${count !== 1 ? 's' : ''} Found</h2>
+            <button class="copy-btn" onclick="copyAllJson()" title="Copy all as JSON">📋 Copy All</button>
+          </div>
+          <div id="resultsBody" style="padding:20px;">`;
+
+      if (data.parseError && count === 0) {
+        html += `
+          <div class="alert alert-warning" style="margin-bottom:16px;">⚠️ Structured JSON could not be parsed. Showing raw AI output below.</div>
+          <div class="raw-fallback">${escapeHtml(data.rawText || '')}</div>`;
+      } else {
+        html += renderObjections(data.objections);
+        if (data.parseError) {
+          html += `<details style="margin-top:16px;"><summary style="font-size:0.8rem;color:var(--text-muted);cursor:pointer;">View raw output</summary><div class="raw-fallback" style="margin-top:8px;">${escapeHtml(data.rawText || '')}</div></details>`;
+        }
+      }
+
+      html += '</div></div>';
+      document.getElementById('resultsPanel').innerHTML = html;
+      window._allObjections = data.objections;
+    } catch (e) {
+      showAlert('Network error. Make sure the server is running.');
+      document.getElementById('resultsPanel').innerHTML = `<div class="panel"><div class="empty-results"><div class="icon">⚠️</div><strong>Connection error</strong><p>Could not reach the server.</p></div></div>`;
+    } finally {
+      document.getElementById('btnIcon').textContent = '🔬';
+      document.getElementById('btnText').textContent = 'Analyze Objections';
+      analyzeBtn.disabled = false;
+    }
+  }
+
+  function copyAllJson() {
+    if (window._allObjections) {
+      navigator.clipboard.writeText(JSON.stringify(window._allObjections, null, 2)).then(() => alert('All objections copied as JSON!'));
+    }
+  }
+</script>
+</body>
+</html>
